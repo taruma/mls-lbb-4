@@ -22,7 +22,6 @@ library(ggplot2)
 library(GGally)
 library(FactoMineR)
 library(factoextra)
-library(ggthemes)
 options(scipen=999)
 ```
 
@@ -31,6 +30,15 @@ R.version
 ```
 
 LBB ini mendemonstrasikan penggunaan PCA dan KMeans (unsupervised learning). 
+
+Github
+: Untuk file `.Rmd` atau `styles.css` bisa melihat github proyek ini di [taruma/mls-lbb-4](https://github.com/taruma/mls-lbb-4).
+
+Notasi $\text{matematika}$
+: Untuk ribuan akan menggunakan pemisah koma ($,$), sedangkan pemisah untuk angka dibelakang koma (desimal/mantissa) menggunakan titik ($.$).
+
+Catatan
+: Pada LBB ini untuk _piping_ akan menggunakan _native piping_ `|>` yang tersedia di `R 4.1+` untuk versi selain itu gunakan `%>%`. 
 
 ## Dataset {#sec-dataset}
 
@@ -46,20 +54,20 @@ Dan berikut struktur data:
 spotify |> str()
 ```
 
-Untuk keterangan setiap kolomnya bisa dilihat [disini](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-audio-features).
+Untuk keterangan setiap kolomnya bisa dilihat [disini](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-audio-features). Berikut penjelasan beberapa kolom yang diambil dari halaman tersebut.
 
-- `acousticness`: A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 1.0 represents high confidence the track is acoustic.
-- `danceability`: Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable.
-- `energy`: Energy is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy. For example, death metal has high energy, while a Bach prelude scores low on the scale. Perceptual features contributing to this attribute include dynamic range, perceived loudness, timbre, onset rate, and general entropy.
-- `instrumentalness`: Predicts whether a track contains no vocals. "Ooh" and "aah" sounds are treated as instrumental in this context. Rap or spoken word tracks are clearly "vocal". The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content. Values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0.
-- `key`: The key the track is in. Integers map to pitches using standard Pitch Class notation. E.g. 0 = C, 1 = C♯/D♭, 2 = D, and so on. If no key was detected, the value is -1.
-- `liveness`: Detects the presence of an audience in the recording. Higher liveness values represent an increased probability that the track was performed live. A value above 0.8 provides strong likelihood that the track is live.
-- `loudness`: The overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological correlate of physical strength (amplitude). Values typically range between -60 and 0 db.
-- `mode`: Mode indicates the modality (major or minor) of a track, the type of scale from which its melodic content is derived. Major is represented by 1 and minor is 0.
-- `speechiness`: Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks.
-- `tempo`: The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.
-- `time_signature`: An estimated time signature. The time signature (meter) is a notational convention to specify how many beats are in each bar (or measure). The time signature ranges from 3 to 7 indicating time signatures of "3/4", to "7/4".
-- `valence`: A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).
+- `acousticness`: _A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 1.0 represents high confidence the track is acoustic._
+- `danceability`: _Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable._
+- `energy`: _Energy is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy. For example, death metal has high energy, while a Bach prelude scores low on the scale. Perceptual features contributing to this attribute include dynamic range, perceived loudness, timbre, onset rate, and general entropy._
+- `instrumentalness`: _Predicts whether a track contains no vocals. "Ooh" and "aah" sounds are treated as instrumental in this context. Rap or spoken word tracks are clearly "vocal". The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content. Values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0._
+- `key`: _The key the track is in. Integers map to pitches using standard Pitch Class notation. E.g. 0 = C, 1 = C♯/D♭, 2 = D, and so on. If no key was detected, the value is -1._
+- `liveness`: _Detects the presence of an audience in the recording. Higher liveness values represent an increased probability that the track was performed live. A value above 0.8 provides strong likelihood that the track is live._
+- `loudness`: _The overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological correlate of physical strength (amplitude). Values typically range between -60 and 0 db._
+- `mode`: _Mode indicates the modality (major or minor) of a track, the type of scale from which its melodic content is derived. Major is represented by 1 and minor is 0._
+- `speechiness`: _Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks._
+- `tempo`: _The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration._
+- `time_signature`: _An estimated time signature. The time signature (meter) is a notational convention to specify how many beats are in each bar (or measure). The time signature ranges from 3 to 7 indicating time signatures of "3/4", to "7/4"._
+- `valence`: _A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry)._
 
 Dilihat secara sekilas datasetnya: 
 
@@ -67,16 +75,18 @@ Dilihat secara sekilas datasetnya:
 spotify |> glimpse()
 ```
 
+Setelah ini masuk ketahapan **R1 - Pemrosesan Data**
+
 ---
 
-## R1 - Preprocessing Data {#sec-r1}
+## R1 - Pemrosesan Data {#sec-r1}
 
 ```{r}
 # untuk menyimpan objek original
 spotify_original <- spotify
 ```
 
-Pada bab ini akan dievaluasi datasetnya seperti diperiksa kelengkapannya, tipe data sebelum memasuki eksplorasi dataset. 
+Pada bab ini akan dievaluasi datasetnya seperti kelengkapannya, tipe data sebelum memasuki eksplorasi dataset maupun pemodelan. 
 
 ### Tipe Kolom/Data {#sec-r1-tipe-data}
 
@@ -95,11 +105,12 @@ spotify_factored <- spotify |>
 spotify_factored |> head()
 ```
 
+Perlu dicatat bahwa kolom seperti `artist_name`, `track_name`, `track_id` bukanlah sebuah kategori meski bertipe `character`. Hal tersebut dikarenakan nilainya sangat unik untuk setiap observasi. Untuk pemeriksaan melalui kode, bisa diperiksa setiap kolom dengan `unique() |> length()`. Tapi karena ini dataset yang cukup familiar dan bisa ditebak dengan nalar, proses yang dilakukan manual. 
 Setelah menentukan kolom kategori dilanjutkan ke kolom berupa angka/numerik.
 
 #### Angka/Numerik
 
-Menggunakan `is.numeric`, dibuat variabel baru bernama `numeric_columns` yang berisikan nama-nama kolom yang berupa angka. Pada tahap ini, tidak dilihat lebih jauh mengenai kolom yang akan digunakan sebagai input data analisis/pemodelan. Berikut variabel `numeric_columns`:
+Menggunakan `is.numeric`, dibuat variabel baru bernama `numeric_columns` yang berisikan nama-nama kolom yang berupa angka. Berikut variabel `numeric_columns`:
 
 ```{r}
 numeric_columns <- spotify |> select(where(is.numeric)) |> colnames()
@@ -120,7 +131,7 @@ Diperoleh `FALSE`, maka data spotify tidak ada memiliki nilai yang kosong. Dan b
 
 ### Eksplorasi Dataset {#sec-r1-eksplorasi}
 
-Hasil dari [kelengkapan data](#sec-r1-kelengkapan), digunanakn sebagai dataset yang dilakukan eksplorasi dataset. Diperiksa dimensi (observasi dan variabel/baris dan kolom) dengan `dim()`:
+Hasil dari [kelengkapan data](#sec-r1-kelengkapan), digunakan untuk eksplorasi dataset. Diperiksa dimensi (observasi dan variabel/baris dan kolom) dengan `dim()`:
 
 ```{r}
 dim(spotify_factored)
@@ -134,21 +145,21 @@ spotify_factored |>
   summary()
 ```
 
-Dari `summary()` diatas, bisa sedikit diterka bahwa `genre` dan `key` lumayan merata (hampir 5 kategori terbanyak memiliki jumlah yang tidak jauh berbeda). Akan tetapi, hal tersebut masih perlu diinvestigasi lebih lanjut. Diketahui juga dari ringkasan diatas, pada `time_signature`, ketukan $\frac{4}{4}$ lebih banyak. 
+Dari `summary()` diatas, bisa sedikit diterka bahwa `genre` dan `key` lumayan merata (hampir 5 kategori terbanyak memiliki jumlah yang tidak jauh berbeda). Akan tetapi, hal tersebut masih perlu diinvestigasi lebih lanjut. Diketahui juga dari ringkasan diatas, pada `time_signature`, tanda birama $\frac{4}{4}$ lebih banyak dan $\frac{0}{4}$ sangat sedikit dan bisa dihapus (untuk sementara tetap digunakan. 
 
 Selanjutnya melihat ringkasan untuk setiap kolom numerik dengan cara yang serupa:
 
-```{r}
+```{r, class.output="scroll-100"}
 spotify_factored |> 
   select(all_of(numeric_columns)) |> 
   summary()
 ```
 
-Dari penjelasan tiap kolom di halaman bantuan spotify, bisa diketahui juga batasan nilai setiap kolom. Tapi tidak semua nilai numerik ini bisa merepresentasikan karakteristik musik. Semisal informasi `loudness` dan `duration_ms` bukanlah karakteristik dari musik. Sehingga, masih bisa untuk dieksplorasi lebih lanjut terkait dataset numerik. 
+Dari penjelasan tiap kolom di halaman bantuan spotify, bisa diketahui juga batasan nilai setiap kolom. Tapi tidak semua nilai numerik ini bisa merepresentasikan karakteristik musik. Semisal informasi `duration_ms` bukanlah karakteristik dari musik sendiri. Sehingga, masih bisa untuk dieksplorasi lebih lanjut terkait dataset numerik. Karakteristik musik disini diasumsikan sebagai suatu nilai yang bisa merepresentasikan/merefleksikan musik dengan _range_ nilai $[0, 1]$ (seperti `energy`, `instrumentalness`, `liveness`, dll).
 
 #### Kolom Numerik
 
-Sebagai langkah percobaan, kolom numerik yang memiliki range $[0, 1]$ dipisahkan dengan kolom numerik yang diluar tersebut. Hal tersebut, dikarenakan karakteristik musik/lagu, biasanya memiliki range $[0,1]$. Sehingga nama-nama kolom yang memiliki range tersebut disimpan sebagai variabel `num_compare_columns`.   
+Sebagai langkah percobaan, kolom numerik yang memiliki _range_ $[0, 1]$ dipisahkan dengan kolom numerik yang diluar tersebut. Hal tersebut, dikarenakan karakteristik musik/lagu, biasanya memiliki range $[0,1]$. Nama kolom yang memiliki _range_ tersebut disimpan sebagai variabel `num_compare_columns`.   
 
 ```{r}
 num_compare_columns <- spotify_factored |>
@@ -158,7 +169,7 @@ num_compare_columns <- spotify_factored |>
 num_compare_columns
 ```
 
-Karena diketahui dataset memiliki lebih dari $200,000$ (dua ratus ribu) baris, maka digunakan _random sampling_ sebanyak $1,000$ baris dengan asumsinya $1,000$ baris tersebut mampu mewakili dataset. (Saat melakukan random sampling seperti ini bisa juga menggunakan teknik lain. Akan tetapi, dengan waktu yang terbatas, untuk sementara digunakan sampling yang sederhana menggunakan `slice_sample()`.)
+Karena diketahui dataset memiliki lebih dari $200,000$ (dua ratus ribu) baris, maka digunakan _random sampling_ sebanyak $1,000$ baris dengan asumsinya $1,000$ baris tersebut mampu mewakili dataset. (Saat melakukan random sampling seperti ini bisa juga menggunakan teknik lain. Akan tetapi, dengan waktu yang terbatas, untuk sementara digunakan sampling yang sederhana menggunakan `slice_sample()`)
 
 ```{r}
 spotify_sample_eda <- spotify_factored |>
@@ -166,7 +177,7 @@ spotify_sample_eda <- spotify_factored |>
 spotify_sample_eda |> head()
 ```
 
-Setelah melakukan _sampling_, bisa divisualisasikan untuk melihat seperti apa data yang diperoleh dan hubungannya antar satu sama lain.
+Setelah melakukan _sampling_, data bisa divisualisasikan untuk melihat seperti apa data yang diperoleh dan hubungannya antar variabel.
 
 ##### Boxplot / Distribusi
 
@@ -186,13 +197,13 @@ spotify_sample_eda |> select(all_of(num_compare_columns)) |>
   coord_flip()
 ```
 
-Dari boxplot sederhana diatas, bisa menduga seperti apa distribusi untuk setiap kolom numerik pada range $[0, 1]$. Dilihat dari `instrumentalness`, bisa diduga bahwa dataset yang diperoleh ini cenderung sebuah lagu (musik yang diiringi vokal). Tapi bisa dilihat juga memiliki beberapa data yang _berpotensi outlier_ yang dapat diartikan sebagai di dataset terdapat beberapa _track_ yang memiliki musik instrumental. Interpretasi tersebut bisa juga diterapkan pada kolom `speechiness` yang mengartikan 0 sebagai bukan berupa _spoken track_ seperti _talk show_ atau _podcast_, sedangkan 1 menunjukkan _track_ tersebut berupa _spoken track_[^info].
+Dari boxplot sederhana diatas, bisa menduga seperti apa distribusi untuk setiap kolom numerik pada range $[0, 1]$. Dilihat dari `instrumentalness`, bisa diduga bahwa dataset yang diperoleh ini cenderung sebuah lagu (musik yang diiringi vokal). Tapi bisa dilihat juga memiliki beberapa data yang _berpotensi outlier_ yang dapat diartikan sebagai di dataset terdapat beberapa _track_ yang memiliki musik instrumental. Interpretasi tersebut bisa juga diterapkan pada kolom `speechiness` yang mengartikan 0 sebagai bukan _spoken track_, sedangkan 1 menunjukkan _track_ tersebut berupa _spoken track_ seperti _talk show_ atau _podcast_[^info].
 
 [^info]: Terdapat informasi lebih detail di [referensi API-nya](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-audio-features). 
 
 ##### Correlogram {.tabset}
 
-_Correlogram_ merupakan visualisasi untuk melihat korelasi antar kolom. Korelasi ini bisa mengidentifikasi apakah terjadi _multicollinearity_. 
+_Correlogram_ merupakan visualisasi untuk melihat korelasi antar kolom. Korelasi ini bisa mengidentifikasi apakah terjadi _multicollinearity_ atau melihat hubungan korelasi positif/negatif terhadap setiap variabel yang ada di dataset. 
 
 ###### Matriks Korelasi
 
@@ -210,6 +221,8 @@ ggcorr(spotify_sample_eda |> select(all_of(numeric_columns)),
 
 Dari hasil diatas, yang paling terlihat jelas hubungannya adalah `energy` dan `loudness` yang berkorelasi positif. Terdapat juga yang berkorelasi negatif seperti `energy` dan `acousticness`. 
 
+---
+
 ###### Karakteristik Musik
 
 Karakteristik musik didefinisikan sebelumnya sebagai kolom yang termasuk `num_compare_columns` (yang memiliki nilai pada _range_ $[0, 1]$). Dari grafik sebelumnya, bisa juga divisualisasikan lebih menarik lagi dengan `ggpairs()`. Berikut hasilnya pada kolom karakteristik musik. 
@@ -220,6 +233,8 @@ ggpairs(spotify_sample_eda |> select(all_of(num_compare_columns)),
 ```
 
 Nilai korelasi dari grafik diatas sama saja dengan grafik sebelumnya yang membedakan hanya pembulatannya saja. 
+
+---
 
 ###### Deskripsi Musik
 
@@ -232,22 +247,24 @@ ggpairs(spotify_sample_eda |> select(all_of(numeric_columns)) |> select(-all_of(
 
 Setelah selesai mengeksplorasi untuk data numerik, dilanjutkan untuk data kategori.
 
+---
+
 #### Kolom Kategori
 
-Pada bagian ini divisualisasikan dan dieksplorasi mengenai kolom yang berupa kategori. Berikut nama kolom yang berupa kategori yang telah disimpan sebagai variabel `factor_columns` sebelumnya.
+Pada bagian ini divisualisasikan dan dieksplorasi mengenai kolom yang berupa kategori. Berikut kolom yang berupa kategori (dalam variabel `factor_columns`).
 
 ```{r}
 factor_columns
 ```
 
-Karena dari `summary()` sebelumnya diketahui bahwa `genre` memiliki kategori yang banyak. Sebagai lebih jelasnya, disimpan jenis musik tersebut sebagai `genre_music` dan dicek jumlah `genre` yang tersedia di dataset.
+Karena dari `summary()` sebelumnya diketahui bahwa `genre` memiliki kategori yang banyak. Sebagai memperjelas, disimpan `genre` musik tersebut sebagai variabel `genre_music` kemudian dicek jumlah `genre` yang tersedia di dataset.
 
 ```{r}
 genre_music <- spotify_factored$genre |> levels()
 length(genre_music)
 ```
 
-Terdapat $27$ kategori musik. Untuk data tipe kategori juga bisa divisualiasikan dengan melihat jumlahnya setiap observasi, baik dari kolom tunggal maupun lebih. Jumlah penghitungan disimpan dalam objek `spotify_factored_count` yang dibuat menggunakan `count()`. Berikut sampel 10 baris dari kategorinya. 
+Terdapat $27$ kategori musik. Untuk data tipe kategori juga bisa divisualisasikan dengan melihat jumlahnya setiap observasi, baik dari kolom tunggal maupun lebih. Jumlah penghitungan disimpan dalam objek `spotify_factored_count` yang dibuat menggunakan `count()`. Berikut sampel 10 baris dari kategorinya. 
 
 ```{r}
 spotify_factored_count <- spotify_factored |> select(all_of(factor_columns)) |> 
@@ -255,13 +272,13 @@ spotify_factored_count <- spotify_factored |> select(all_of(factor_columns)) |>
 spotify_factored_count |> slice_sample(n = 10)
 ```
 
-Nah selain itu, visualisasinya bisa berupa _barplot_ dengan berbagai konfigurasi. Berikut beberapa konfigurasi visualisasi untuk kolom kategori.
+Selain itu, visualisasinya bisa berupa _barplot_ dengan berbagai konfigurasi. Berikut beberapa konfigurasi visualisasi untuk kolom kategori.
 
 ##### Visualisasi Data Kategori {.tabset}
 
 ###### Genre
 
-Visualisasi ini untuk memperoleh seberapa banyak musik yang dikelompokkan berdasarkan `genre`. 
+Visualisasi ini untuk melihat seberapa banyak musik yang dikelompokkan berdasarkan `genre`. 
 
 ```{r, fig.height=5, fig.align='center', fig.cap='Jumlah musik untuk setiap genre'}
 spotify_factored_count |> group_by(genre) |> summarise(freq = sum(n)) |>
@@ -271,6 +288,11 @@ spotify_factored_count |> group_by(genre) |> summarise(freq = sum(n)) |>
 ```
 
 Dari grafik diatas diketahui bahwa musik berjenis _Children's Music_ dan _A Capella_ cukup sedikit dibandingkan jenis lainnya. Dari informasi ini, bisa dilakukan tindakan untuk mengabaikan jenis musik tersebut, tapi untuk sementara jenis musik tersebut akan dilibatkan dalam proses analisis ataupun pemodelan. 
+
+Kekeliruan pada pembacaan dataset
+: Dilihat terdapat dua kategori yang namanya sama yaitu _Children's Music_. Seharusnya kedua kategori itu digabungkan menjadi satu atau salah satunya dihapus dari dataset. Untuk proses berikutnya, **diasumsikan** _Children's Music_ memang memiliki dua kategori terpisah. Karena jika digabung kategori tersebut jadi lebih banyak dibandingkan kategori lainnya. 
+
+---
 
 ###### Key
 
@@ -285,6 +307,8 @@ spotify_factored_count |> group_by(key) |> summarise(freq = sum(n)) |>
 
 Dari gambar diatas, diketahui kunci D# jarang digunakan. Dan yang paling populer digunakan adalah kunci C. 
 
+---
+
 ###### Mode
 
 Visualisasi ini berdasarkan `mode`. 
@@ -298,18 +322,22 @@ spotify_factored_count |> group_by(mode) |> summarise(freq = sum(n)) |>
 
 Kebanyakan musik menggunakan mayor. 
 
+---
+
 ###### Time Signature
 
-Visualisasi ini berdasarkan `key`. 
+Visualisasi ini berdasarkan tanda birama. 
 
 ```{r, fig.height=5, fig.align='center', fig.cap='Jumlah musik untuk setiap time_signature'}
 spotify_factored_count |> group_by(time_signature) |> summarise(freq = sum(n)) |>
   ggplot(aes(time_signature, freq)) +
   geom_col(aes(fill = freq), show.legend = FALSE) + theme_bw() +
-  labs(title = "Banyaknya musik untuk setiap ketukan", y = "Frekuensi")
+  labs(title = "Banyaknya musik untuk setiap tanda birama", y = "Frekuensi")
 ```
 
-Dari sini juga diperoleh ketukan $\frac{4}{4}$ lebih banyak digunakan. 
+Dari sini juga diperoleh tanda birama $\frac{4}{4}$ lebih banyak digunakan. 
+
+---
 
 ###### Distribusi Genre Pop
 
@@ -331,7 +359,9 @@ spotify_factored_count |>
   theme_bw()
 ```
 
-Banyak yang dapat diceritakan terkait grafik diatas. Untuk mempersingkat, dapat diketahui bahwa musik Pop sering menggunakan ketukan $\frac{4}{4}$, dengan penggunaan mode _Major_ tertinggi di kunci C. 
+Banyak yang dapat diceritakan terkait grafik diatas. Untuk mempersingkat, dapat diketahui bahwa musik Pop sering menggunakan tanda birama $\frac{4}{4}$, dengan penggunaan mode _Major_ tertinggi di kunci C. 
+
+---
 
 ###### Distribusi Genre Classical
 
@@ -352,7 +382,9 @@ spotify_factored_count |>
   theme_bw()
 ```
 
-Berbeda dengan pop, untuk musik _Classical_ tidak didominasi oleh ketukan $\frac{4}{4}$. Dan pada ketukan lain dapat terlihat meski jumlahnya tidak sebanyak $\frac{4}{4}$. Dan di mode _Major_, ada tiga kunci yang populer yaitu C, D, G. 
+Berbeda dengan pop, untuk musik _Classical_ tidak didominasi oleh tanda birama $\frac{4}{4}$. Dan pada tanda birama lain dapat terlihat meski jumlahnya tidak sebanyak $\frac{4}{4}$. Dan di mode _Major_, ada tiga kunci yang populer yaitu C, D, G. 
+
+---
 
 #### Kesimpulan EDA
 
@@ -362,7 +394,7 @@ Dari eksplorasi diatas, dapat beberapa informasi mengenai dataset. Hanya saja, f
 
 ## R2 - Pemilihan Parameter {#sec-r2}
 
-Pada bab ini akan ditentukan pemilihan parameter dan pemodelan PCA dan K-means. Dataset yang telah diolah dan dieksplor sebelumnya disimpan sebagai objek baru bernama `spotify_r2`. Dan berikut datasetnya secara sekilas.
+Pada bab ini akan ditentukan pemilihan parameter untuk PCA dan K-means. Dataset yang telah diolah dan dieksplorasi sebelumnya disimpan sebagai objek baru bernama `spotify_r2`. Dan berikut datasetnya secara sekilas.
 
 ```{r}
 spotify_r2 <- spotify_factored
@@ -384,7 +416,7 @@ data.frame(info_columns[sq], factor_columns[sq], numeric_columns[sq], num_compar
 
 ### Dimensionality Reduction
 
-Tahap ini dilakukan pertama untuk melihat karakteristik musik dan yang lainnya bisa disederhanakan dengan _Principal Component_. Berikut dataset lengkap `spotify_r2` secara sekilas. 
+Tahap ini dilakukan pertama untuk melihat karakteristik musik dan yang lainnya bisa diekspresikan sebagai _Principal Component_. Berikut dataset `spotify_r2` secara sekilas. 
 
 ```{r}
 glimpse(spotify_r2)
@@ -406,7 +438,7 @@ spotify_pca_scaled |> glimpse()
 
 Setelah selesai memilih kolom mana saja yang akan digunakan, dilakukan PCA menggunakan `PCA()`. Berikut ringkasan dari PCA.
 
-```{r}
+```{r, class.output="scroll-100"}
 pca_spotify <- PCA(spotify_pca_scaled, 
                    scale.unit=FALSE, graph = FALSE, ncp = length(numeric_columns))
 pca_spotify |> summary()
@@ -437,7 +469,7 @@ pca_eig <-  get_eig(pca_spotify) |> as.data.frame()
 pca_eig
 ```
 
-Jika diinginkan untuk mempertahankan informasi dari dataset aslinya sebesar $80%$, bisa diambil berdasarkan nilai _cumulative variance_. Berikut dimensi yang setidaknya memiliki _variance_ 80%.
+Jika diinginkan untuk mempertahankan informasi dari dataset aslinya sebesar $80\%$, bisa diambil berdasarkan nilai _cumulative variance_. Berikut dimensi yang setidaknya memiliki _cumulative variance_ 80%.
 
 ```{r}
 pca_eig |>
@@ -497,7 +529,7 @@ fviz_contrib(pca_spotify, choice = "var", axes = 5, top = 10,
              ggtheme = theme_bw())
 ```
 
-Disini diperoleh bahwa `popularity` di PC5 lebih tinggi daripada PC yang lain, tapi tidak lebih signifikan daripada `duration_ms` dan `valance`. Dari sini, bisa diduga bahwa variabel `duration_ms` tidak begitu berpengaruh di dataset kita. Selain `popularity` muncul tertingginya mulai dari di PC5 (yang informasinya sudah tergolong kecil), `popularity` juga bukan yang mendominasi di PC tersebut (PC5).
+Disini diperoleh bahwa `popularity` di PC5 lebih tinggi daripada PC yang lain, tapi tidak lebih signifikan daripada `duration_ms` dan `valance`. Dari sini, bisa diduga bahwa variabel `popularity` tidak begitu berpengaruh di dataset kita. Selain `popularity` muncul tertingginya mulai dari di PC5 (yang informasinya sudah tergolong kecil), `popularity` juga bukan yang mendominasi di PC tersebut (PC5).
 
 Dari sini akan dilanjutkan dengan informasi PC1 dan PC2 untuk Kmeans. 
 
@@ -513,7 +545,7 @@ spotify_km$PC2 <- pca_spotify_ind$coord[,"Dim.2"]
 spotify_km |> head()
 ```
 
-Karena untuk K-Means ini dieksekusi dan diplotkan setiap individual observasinya. Sehingga untuk menampikan lebih dari $200,000$ baris itu sangat memberatkan dan menyulitkan untuk dibaca. Oleh karena itu dilakukan _random sampling_ seperti pada [bagian awal](#sec-r1-eksplorasi). Hanya saja pengambilannya berdasarkan `genre` dan hanya diambil sebanyak $100$ data untuk setiap `genre`. Pengambilan sebanyak $100$ dikarenakan pada `genre` _A Capella_ tidak memiliki observasi lebih dari $100$. Berikut 6 baris data yang diambil secara acak setelah menyimpan hasil sampling di objek `spotify_km_sample`:
+Karena untuk K-Means ini dieksekusi dan diplotkan setiap individual observasinya. Sehingga untuk menampikan lebih dari $200,000$ baris itu sangat memberatkan dan menyulitkan untuk dibaca. Oleh karena itu dilakukan _random sampling_ seperti pada [bagian awal](#sec-r1-eksplorasi). Hanya saja pengambilannya berdasarkan `genre` dan diambil sebanyak $100$ data untuk setiap `genre`. Pengambilan sebanyak $100$ dikarenakan pada `genre` _A Capella_ tidak memiliki observasi lebih dari $100$. Berikut 6 baris data yang diambil secara acak setelah menyimpan hasil sampling di objek `spotify_km_sample`:
 
 ```{r}
 set.seed(41908481)
@@ -578,7 +610,7 @@ spotify_km_sample$cluster <- km_spotify$cluster
 spotify_km_sample |> head()
 ```
 
-Dari grafik antara PC1 vs PC2 juga bisa divisualisasikan dengan menampilkan kategori dan 
+Dari grafik antara PC1 vs PC2 juga bisa divisualisasikan dengan menampilkan hasil cluster dengan bantuan fungsi `fviz_cluster()`. 
 
 ```{r, warning=FALSE, fig.align='center', fig.cap="Kluster PC1 vs PC2"}
 fviz_cluster(km_spotify, data = spotify_km_sample_input,
@@ -586,11 +618,13 @@ fviz_cluster(km_spotify, data = spotify_km_sample_input,
   theme_bw()
 ```
 
-Karena K-Means hanya dua variabel, sudah cukup melakukan visualiasasi diatas. Selanjutnya di eksplorasi lagi hasil dari PCA dan K-Means terhadap dataset original.
+Karena K-Means yang dilakukan hanya dua variabel, rasanya sudah cukup melakukan visualiasasi diatas. Selanjutnya, memperoleh _insight_ dari hasil analisis melalui grafik/visualisasi ataupun tabel/angka.
 
-## R3 - Visualiasi Insight {#sec-r3}
+---
 
-Pada bab ini, akan fokus mengekstrak informasi yang bisa diperoleh dari analisis maupun pemodelan yang dilakukan sebelumnya. 
+## R3 - Visualisasi Insight {#sec-r3}
+
+Pada bab ini, dari analisis maupun pemodelan yang dilakukan sebelumnya ingin diperoleh _insight_ atau informasi yang tidak dapat diperoleh sebelumnya melalui eksplorasi dataset. 
 
 ### Kluster untuk setiap `genre` 
 
@@ -625,8 +659,8 @@ spotify_r3_genre |>
 
 Dari grafik diatas bisa dilihat lebih jelas mengenai pembagian cluster untuk setiap genre. Berikut informasi yang bisa diperoleh dari grafik diatas:
 
-- Cluster 1, cenderung pada `genre` _Comedy_.
-- Cluster 2, cenderung pada `genre` _Soundtrack_, _Opera_, _Classical_, dan _Acapella_.
+- Cluster 2, cenderung pada `genre` _Comedy_.
+- Cluster 1, cenderung pada `genre` _Soundtrack_, _Opera_, _Classical_, dan _Acapella_.
 - Sisanya masuk ke kluster 3. 
 
 Berikut jika dalam bentuk dataframe:
@@ -680,6 +714,5 @@ Berikut yang bisa dilakukan selanjutnya:
 
 - Memodelkan K-Means tapi dengan variabel asli. Hanya saja harus dilakukan _sampling_ yang tepat agar informasinya tetap relevan ketika dibandingkan dengan dataset secara keseluruhannya. 
 - Menganalisis PC yang signifikan, dan dilakukan PCA terkait komponen yang relevan saja. Atau mereduksi dimensi dengan seleksi manual (memilih dengan penalaran dan pemahaman bidangnya).
-- Eksplorasi dengan pendekatan yang berbeda. 
+- Menghapus kolom/baris yang diduga dapat mempengaruhi analisis. Contohnya, pada eksplorasi awal, diketahui terdapat kategori _Children's Music_ yang duplikat. Sebaiknya kategori tersebut harus diolah lebih lanjut baik digabungkan atau dihapus. Selain itu, kategori _A Capella_ sangat sedikit sehingga untuk pemodelan hanya terbatas $100$ _sample_. Jika kategori tersebut dihapus, sample yang dilakukan bisa melebihi dari $100$ karena kategori lain memiliki jumlah _track_ yang banyak dari ribuan. 
 
----
